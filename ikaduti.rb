@@ -2,6 +2,10 @@ require 'slack-ruby-bot'
 require './commander'
 
 class Ikaduti < SlackRubyBot::Bot
+  def self.command_ex(regex, &block)
+    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+(?<command>#{regex})$", Regexp::IGNORECASE), &block
+    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+(?<command>#{regex})[\\s]+(?<expression>.*)$", Regexp::IGNORECASE), &block
+  end
   command 'おはよう' do |client, data, match|
     client.say(text: '＜おはよう、司令官！今日も一日頑張りましょー？', channel: data.channel)
   end
@@ -32,7 +36,7 @@ class Ikaduti < SlackRubyBot::Bot
     ]
     client.say(text: s.sample, channel: data.channel)
   end
-  match /私は(.*)です/ do |client, data, match|
+  command_ex /私は(.*)です.*/ do |client, data, match|
     c = Commander.create!(username: data.user, name: match[1])
     client.say(text: "<@#{c.username}> は #{c.name} さんね！覚えたわ。", channel: data.channel)
   end
@@ -43,6 +47,14 @@ class Ikaduti < SlackRubyBot::Bot
     else
       client.say(text: "#{c.name} さん～♪", channel: data.channel)
     end
+  end
+  command_ex "(.*) は (.*).*" do |client, data, match|
+    c = Commander.create!(username: match[1], name: match[2])
+    client.say(text: "#{c.username} は #{c.name} ね！覚えたわ。", channel: data.channel)
+  end
+  command_ex "(.*) は.*[？?]" do |client, data, match|
+    c = Commander.find_by_username(match[1])
+    client.say(text: "#{c.username} は #{c.name} だよ～～。", channel: data.channel)
   end
 end
 
