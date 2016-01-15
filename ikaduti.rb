@@ -1,4 +1,5 @@
 require 'slack-ruby-bot'
+require './commander'
 
 class Ikaduti < SlackRubyBot::Bot
   command 'おはよう' do |client, data, match|
@@ -30,6 +31,18 @@ class Ikaduti < SlackRubyBot::Bot
       '＜金曜日はカレーを食べるといいと思うわ！',
     ]
     client.say(text: s.sample, channel: data.channel)
+  end
+  match /私は(.*)です/ do |client, data, match|
+    c = Commander.create!(username: data.user, name: match[1])
+    client.say(text: "<@#{c.username}> は #{c.name} さんね！覚えたわ。", channel: data.channel)
+  end
+  command '呼んで', 'よんで'  do |client, data, match|
+    c = Commander.find_by_username(data.user)
+    unless c
+      client.say(text: "<@#{data.user}>さんは知らないわ…", channel: data.channel)
+    else
+      client.say(text: "#{c.name} さん～♪", channel: data.channel)
+    end
   end
 end
 
