@@ -3,8 +3,8 @@ require './commander'
 
 class Ikaduti < SlackRubyBot::Bot
   def self.command_ex(regex, &block)
-    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+(?<command>#{regex})$", Regexp::IGNORECASE), &block
-    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+(?<command>#{regex})[\\s]+(?<expression>.*)$", Regexp::IGNORECASE), &block
+    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+#{regex}$", Regexp::IGNORECASE), &block
+    match Regexp.new("^(?<bot>[[:alnum:][:punct:]@<>]*)[\\s]+#{regex}[\\s]+(?<expression>.*)$", Regexp::IGNORECASE), &block
   end
   command 'おはよう' do |client, data, match|
     client.say(text: '＜おはよう、司令官！今日も一日頑張りましょー？', channel: data.channel)
@@ -28,16 +28,17 @@ class Ikaduti < SlackRubyBot::Bot
     s = [
       '＜もう、さっき食べたでしょ！',
       '＜ゴロゴロー。',
-      '＜っ高速修復材',
-      '＜っボーキサイト',
+      'っ高速修復材',
+      'っボーキサイト',
       '＜さっき魚を釣って来たわ。一緒に食べましょう？',
       '＜おなかが空いたなら、お肉を食べればいいじゃない！',
       '＜金曜日はカレーを食べるといいと思うわ！',
     ]
     client.say(text: s.sample, channel: data.channel)
   end
-  command_ex /私は(.*)です.*/ do |client, data, match|
-    c = Commander.create!(username: data.user, name: match[1])
+  command_ex '私は (?<name>.*) です.*' do |client, data, match|
+    p match
+    c = Commander.create!(username: data.user, name: match[:name])
     client.say(text: "<@#{c.username}> は #{c.name} さんね！覚えたわ。", channel: data.channel)
   end
   command '呼んで', 'よんで'  do |client, data, match|
@@ -48,12 +49,12 @@ class Ikaduti < SlackRubyBot::Bot
       client.say(text: "#{c.name} さん～♪", channel: data.channel)
     end
   end
-  command_ex "(.*) は (.*).*" do |client, data, match|
-    c = Commander.create!(username: match[1], name: match[2])
+  command_ex "(?<A>.*) は (?<B>.*).*" do |client, data, match|
+    c = Commander.create!(username: match[:A], name: match[:B])
     client.say(text: "#{c.username} は #{c.name} ね！覚えたわ。", channel: data.channel)
   end
-  command_ex "(.*) は.*[？?]" do |client, data, match|
-    c = Commander.find_by_username(match[1])
+  command_ex "(?<A>.*)" do |client, data, match|
+    c = Commander.find_by_username(match[:A])
     client.say(text: "#{c.username} は #{c.name} だよ～～。", channel: data.channel)
   end
 end
