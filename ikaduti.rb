@@ -55,7 +55,11 @@ class Ikaduti < SlackRubyBot::Bot
   end
   command_ex "(?<A>.*)" do |client, data, match|
     c = Commander.find_by_username(match[:A])
-    client.say(text: "#{c.username} は #{c.name} だよ～～。", channel: data.channel)
+    if c
+      client.say(text: "#{c.username} は #{c.name} だよ～～。", channel: data.channel)
+    else
+      client.say(text: "<@#{data.user}>: #{match[:A]} ってなんですか～？", channel: data.channel)
+    end
   end
 end
 
