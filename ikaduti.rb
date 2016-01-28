@@ -24,15 +24,18 @@ class Ikaduti < SlackRubyBot::Bot
     ]
     client.say(text: s.sample, channel: data.channel)
   end
-  command 'ランチ', 'はらへ', 'お腹空いた', 'おなかすいた' do |client, data, match|
+  command 'ランチ', 'はらへ', 'はらへり', 'お腹空いた', 'おなかすいた' do |client, data, match|
     s = [
       '＜もう、さっき食べたでしょ！',
-      '＜ゴロゴロー。',
-      'っ高速修復材',
-      'っボーキサイト',
-      '＜さっき魚を釣って来たわ。一緒に食べましょう？',
-      '＜おなかが空いたなら、お肉を食べればいいじゃない！',
-      '＜金曜日はカレーを食べるといいと思うわ！',
+      '＜ゴロゴロー。:zap:',
+      'っ高速修復材 :bath:',
+      'っボーキサイト:large_orange_diamond:',
+      '＜お魚なんてどうかしら！ :fish:',
+      '＜揚げたてのカツよ～ :pig:',
+      '＜たまにはお寿司なんてどうかしら？ :sushi:',
+      '＜おなかが空いたなら、お肉を食べればいいじゃない！ :meat_on_bone:',
+      '＜金曜日はカレーを食べるといいと思うわ！ :curry:',
+      '＜中華始めました。:fish_cake:',
     ]
     client.say(text: s.sample, channel: data.channel)
   end
